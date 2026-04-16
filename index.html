@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NishadGPT 🤖</title>
+</head>
+<body style="text-align:center; font-family:Arial; background:black; color:white;">
+
+  <h1>🤖 NishadGPT</h1>
+
+  <input id="question" placeholder="अपना सवाल लिखो..." 
+  style="width:70%; padding:12px; border-radius:10px;">
+  
+  <button onclick="askAI()" 
+  style="padding:12px 20px; border-radius:10px; background:green; color:white;">
+  Send 🚀
+  </button>
+
+  <br><br>
+
+  <p id="answer" style="font-size:18px;"></p>
+
+  <script>
+    async function askAI() {
+      let q = document.getElementById("question").value;
+
+      let res = await fetch("/api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: q })
+      });
+
+      let data = await res.json();
+      document.getElementById("answer").innerText = data.reply;
+    }
+
+    // Enter press से भी send होगा
+    document.getElementById("question").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        askAI();
+      }
+    });
+  </script>
+
+</body>
+</html>
