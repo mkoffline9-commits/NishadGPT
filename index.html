@@ -1,47 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
-  <title>NishadGPT 🤖</title>
+<meta charset="UTF-8">
+<title>NishadGPT</title>
+
+<style>
+body {
+  background: black;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+  margin: 0;
+}
+
+/* Header */
+header {
+  background: #111;
+  padding: 15px;
+  font-size: 20px;
+}
+
+/* About */
+#about {
+  padding: 15px;
+  border-bottom: 1px solid #444;
+}
+
+/* Chat Box */
+#chat {
+  width: 90%;
+  margin: auto;
+  height: 50vh;
+  overflow-y: auto;
+  border: 1px solid #444;
+  padding: 10px;
+}
+
+/* Input Area */
+#inputArea {
+  margin: 10px;
+}
+
+input {
+  width: 65%;
+  padding: 10px;
+}
+
+button {
+  padding: 10px;
+  background: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+</style>
+
 </head>
-<body style="text-align:center; font-family:Arial; background:black; color:white;">
+<body>
 
-  <h1>🤖 NishadGPT</h1>
+<header>🤖 NishadGPT</header>
 
-  <input id="question" placeholder="अपना सवाल लिखो..." 
-  style="width:70%; padding:12px; border-radius:10px;">
-  
-  <button onclick="askAI()" 
-  style="padding:12px 20px; border-radius:10px; background:green; color:white;">
-  Send 🚀
-  </button>
+<!-- About Section -->
+<div id="about">
+  <h3>About Me</h3>
+  <p>
+    मेरा नाम Mukesh Nishad है। यह एक फ्री ऑनलाइन AI टूल है, 
+    जहाँ आप सवाल पूछ सकते हैं और तुरंत जवाब पा सकते हैं।
+  </p>
+</div>
 
-  <br><br>
+<!-- Chat -->
+<div id="chat"></div>
 
-  <p id="answer" style="font-size:18px;"></p>
+<div id="inputArea">
+  <input id="input" placeholder="Type here...">
+  <button onclick="send()">Send 🚀</button>
+</div>
 
-  <script>
-    async function askAI() {
-      let q = document.getElementById("question").value;
+<script>
+async function send() {
+  const input = document.getElementById("input");
+  const chat = document.getElementById("chat");
 
-      let res = await fetch("/api", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ text: q })
-      });
+  const text = input.value;
+  if (!text) return;
 
-      let data = await res.json();
-      document.getElementById("answer").innerText = data.reply;
-    }
+  chat.innerHTML += "<p><b>You:</b> " + text + "</p>";
 
-    // Enter press से भी send होगा
-    document.getElementById("question").addEventListener("keypress", function(e) {
-      if (e.key === "Enter") {
-        askAI();
-      }
-    });
-  </script>
+  input.value = "";
+
+  const res = await fetch("/api", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ text })
+  });
+
+  const data = await res.json();
+
+  chat.innerHTML += "<p><b>AI:</b> " + data.reply + "</p>";
+
+  chat.scrollTop = chat.scrollHeight;
+}
+</script>
 
 </body>
 </html>
